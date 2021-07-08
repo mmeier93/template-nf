@@ -26,6 +26,10 @@ if (params.help) {
   exit 0
 }
 
+// Define channels from repository files
+projectDir = workflow.projectDir
+ch_run_sh_script = Channel.fromPath("${projectDir}/bin/run.sh")
+
 // Define Channels from input
 Channel
     .fromPath(params.input)
@@ -42,12 +46,14 @@ process step_1 {
 
     input:
     set val(sample_name), file(input_file) from ch_input
-
+    file(run_sh_script) from ch_run_sh_script
+    
     output:
     file "input_file_head.txt" into ch_out
 
     script:
     """
+    run.sh
     head $input_file > input_file_head.txt
     """
   }
